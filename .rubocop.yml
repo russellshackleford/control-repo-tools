@@ -1,0 +1,7 @@
+AllCops:
+  TargetRubyVersion: 2.1
+  Exclude:
+    - 'spec/fixtures/**/*'
+    - 'vendor/**/*'
+
+# vim: set tw=80 ts=2 sw=2 sts=2 et:
