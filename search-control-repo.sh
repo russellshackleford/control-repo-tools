@@ -47,8 +47,9 @@ function find_matches() {
   [ -z "$1" ] && return 1
   [ -z "$2" ] && return 1
   local res
-  res=$(grep -Eh '(class[[:space:]]*{|contain |include )' "$2" | \
-        grep -v -e '^[[:space:]]*#') || : # No matches is not a failure
+  res=$(grep -Eh -e 'class[[:space:]]*{' \
+    -e '^[[:space:]]*(->)?[[:space:]]*(contain |include )' "$2" | \
+    grep -v -e '^[[:space:]]*#') || : # No matches is not a failure
   unset -v "$1"
   printf -v "$1" '%s' "$res"
 }
@@ -176,10 +177,18 @@ done
 # uniqmods is empty, will trigger an unbound error due to set -u. Ignore that
 # for this for loop as we know it is empty.
 set +u
+
 for mod in "${allmods[@]}"; do
-  [[ ${uniqmods[*]} =~ [[:space:]]${mod%%:*}[[:space:]] ]] && continue
+  # If the module begins with :: it will expand to nothing, so strip the ::
+  [ "${mod%%:*}" == '' ] && mod="${mod:2}"
+  # Beginning of array
   [[ ${uniqmods[*]} =~ ^${mod%%:*}[[:space:]] ]] && continue
+  # End of array
   [[ ${uniqmods[*]} =~ [[:space:]]${mod%%:*}$ ]] && continue
+  # Only entry in array
+  [[ ${uniqmods[*]} =~ ^${mod%%:*}$ ]] && continue
+  # Anywhere else in the array
+  [[ ${uniqmods[*]} =~ [[:space:]]${mod%%:*}[[:space:]] ]] && continue
   uniqmods+=("${mod%%:*}")
 done
 set -u
