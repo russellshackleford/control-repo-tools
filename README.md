@@ -1,7 +1,7 @@
 # module dependency checking tools #
 
-There are currently two scripts: `process-puppetfile.rb` and
-`search-control-repo.sh`.
+There are currently three scripts: `process-puppetfile.rb`,
+`search-control-repo.sh`, and `search-component-modules.sh`.
 
 ## process-puppetfile.rb ##
 
@@ -73,6 +73,25 @@ layout, which basically means one less layer of abstraction at the cost of a
 *possible* (but not overly large) bit of code duplication. This is basically
 the same thing as a **super profile** as discussed in [Roles and profiles:
 Designing convenient roles](https://puppet.com/docs/pe/2017.2/r_n_p_roles.html)
+
+## search-component-modules.sh ##
+
+### Quick Usage ###
+
+Given a directory with any number of modules installed or cloned, search for all
+`.pp` files and look for other modules being called. Currently this does NOT
+strip out references to the module itself. That is, searching the `apache`
+module will return apache as one of the results.
+
+```bash
+git clone <URL to this repo>
+cd </path/to/this/repo>
+./search-control-repo.sh -r <path/to/a bunch of modules> [-c]
+```
+
+### Dependencies ###
+
+Same as `search-control-repo.sh`
 
 [comment]: # ( vim: set tw=80 ts=4 sw=4 sts=4 et: )
 
