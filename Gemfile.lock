@@ -2,7 +2,11 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
+    colored (1.2)
     colorize (0.8.1)
+    cri (2.10.1)
+      colored (~> 1.2)
+    facter (2.5.1)
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
@@ -15,20 +19,37 @@ GEM
       fast_gettext (~> 1.1.0)
       gettext (>= 3.0.2)
       locale
+    hiera (3.5.0)
     jaro_winkler (1.5.2)
+    json_pure (1.8.6)
     locale (2.1.2)
+    log4r (1.1.10)
     minitar (0.8)
+    multi_json (1.13.1)
     multipart-post (2.0.0)
-    parallel (1.12.1)
-    parser (2.5.3.0)
+    parallel (1.13.0)
+    parser (2.6.0.0)
       ast (~> 2.4.0)
     powerpack (0.1.2)
+    puppet (4.10.12)
+      facter (> 2.0, < 4)
+      gettext-setup (>= 0.10, < 1)
+      hiera (>= 2.0, < 4)
+      json_pure (~> 1.8)
+      locale (~> 2.1)
     puppet_forge (2.2.9)
       faraday (>= 0.9.0, < 0.14.0)
       faraday_middleware (>= 0.9.0, < 0.13.0)
       gettext-setup (~> 0.11)
       minitar
       semantic_puppet (~> 1.0)
+    r10k (3.0.0)
+      colored (= 1.2)
+      cri (~> 2.8)
+      gettext-setup (~> 0.24)
+      log4r (= 1.1.10)
+      multi_json (~> 1.10)
+      puppet_forge (~> 2.2.8)
     rainbow (3.0.0)
     rubocop (0.57.2)
       jaro_winkler (~> 1.5.1)
@@ -49,7 +70,9 @@ PLATFORMS
 
 DEPENDENCIES
   colorize
+  puppet (< 5.0.0)
   puppet_forge (~> 2.2.8)
+  r10k
   rubocop
   ruby-filemagic
 
