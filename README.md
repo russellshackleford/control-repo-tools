@@ -15,13 +15,13 @@ Git repository. If that fails, it will finally attempt to scrape
 
 Both `-c|--credentials-file` and `-p|--puppetfile` are optional and will default
 to a file called `options` and `Puppetfile` (respectively) in the same directory
-as the script itself.
+as the script itself. Output is colored (disable with `--no-color`).
 
 ```bash
 git clone <URL to this repo>
 cd </path/to/this/repo>
 bundle install --path .bundle
-bundle exec ./process-puppetfile.rb -p </path/to/control-repo/Puppetfile>
+bundle exec ./process-puppetfile.rb -p </path/to/Puppetfile> [--no-color]
 ```
 
 If you need authentication due to a private repository, basic auth is supported.
@@ -81,7 +81,8 @@ Designing convenient roles](https://puppet.com/docs/pe/2017.2/r_n_p_roles.html)
 Given a directory with any number of modules installed or cloned, search for all
 `.pp` files and look for other modules being called. Currently this does NOT
 strip out references to the module itself. That is, searching the `apache`
-module will return apache as one of the results.
+module will return apache as one of the results. Output is colored (disable with
+`-c`).
 
 ```bash
 git clone <URL to this repo>

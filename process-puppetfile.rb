@@ -322,10 +322,8 @@ options = OptionParser.new do |x|
        "Defaults to 'Puppetfile' in this script's directory") do |i|
     opts[:puppetfile] = i
   end
-  # x.on_tail("-h", "--help", "Show this message") do
-  #   puts opts
-  #   exit
-  # end
+  # optionparser sees the 'no-' and magically makes i false when true is desired
+  x.on('--no-color', 'Disables colored output') { |i| opts[:nocolor] = !i }
 end
 
 begin
@@ -354,6 +352,8 @@ rescue RuntimeError => e
   warn e
   exit(1)
 end
+
+String.disable_colorization = true if opts[:nocolor]
 
 creds = { user: opts[:user],
           pass: opts[:pass] }
