@@ -16,19 +16,16 @@ fi
 function cleanse_matches() {
   [ -z "$1" ] && return 1
   [ -z "$2" ] && return 1
-  local res res1 res2
-  res1=$(sed -e "s|^\s*\(->\)*\s*class\s*{\s*['\"]*:*||" \
-             -e "s|^\s*\(->\)*\s*include\s*['\"]*||" \
-             -e "s|^\s*\(->\)*\s*contain\s*['\"]*||" \
-             -e "s|['\"]\s*:*.*||" \
-             -e "s|\s*#.*||" \
-             <<< "$2")
-  # This will remove all role::something and all role::$something. If anything
-  # other than role modules are included in manifests/site.pp, it is an error
-  # and for all role modules, we are processing them all anyway, so we don't
-  # care if the are included.
-  res2=$(grep -v 'role::[a-z$]' <<< "$res1") || : # No match is not an error
-  res="$res2"
+  local res split
+  # It is allowed to include multiple classes on one line. Split
+  # to catch more than just the first class.
+  split=$(sed "s|,|\ninclude|g" <<< "$2")
+  res=$(sed -e "s|^\s*\(->\)*\s*class\s*{\s*['\"]*:*||" \
+            -e "s|^\s*\(->\)*\s*include\s*['\"]*||" \
+            -e "s|^\s*\(->\)*\s*contain\s*['\"]*||" \
+            -e "s|['\"]\s*:*.*||" \
+            -e "s|\s*#.*||" \
+            <<< "$split")
   unset -v "$1"
   printf -v "$1" '%s' "$res"
 }
@@ -48,8 +45,8 @@ function find_matches() {
   [ -z "$2" ] && return 1
   local res
   res=$(grep -Eh -e 'class[[:space:]]*{' \
-    -e '^[[:space:]]*(->)?[[:space:]]*(contain |include )' "$2" | \
-    grep -v -e '^[[:space:]]*#') || : # No matches is not a failure
+    -e "^[[:space:]]*(->)?[[:space:]]*(contain |include )[[:space:]]*[\"\':a-z0-9]" \
+    "$2" | grep -v -e '^[[:space:]]*#') || : # No matches is not a failure
   unset -v "$1"
   printf -v "$1" '%s' "$res"
 }
@@ -132,10 +129,10 @@ declare match_cleansed
 allmods=()
 uniqmods=()
 
-# Now process all of the role modules
+# Now process all of the component modules
 mapfile -t manifests < <(find "$repos" -type f -name \*.pp)
 
-# Print the modules found in each role and print the file name. At the same
+# Print the modules found in each module and print the file name. At the same
 # time, collect all of the modules in an array for further processing.
 for manifest in "${manifests[@]}"; do
   process_file "$manifest"
